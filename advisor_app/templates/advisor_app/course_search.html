@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load socialaccount %}
+{% load bootstrap5 %}
+{% load static %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="\advisor_app\home\">B-17</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="\advisor_app\home\">Home <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="\advisor_app\schedule\">Schedules</a>
+      <a class="nav-item nav-link active" href="\advisor_app\course_search\">Course Search</a>
+      <a class="nav-item nav-link" href="\advisor_app\chat\">Chats</a>
+    </div>
+      <div class="navbar-nav navbar-right">
+          <a class="nav-item nav-link" href="\advisor_app\home\logout\">Logout</a>
+      </div>
+  </div>
+</nav>
+{% endif %}
+
+<div class="container">
+    <h1>Course Search</h1>
+    <p>Search for a course. Note that not all search fields need to be filled out.</p><br>
+    <form action="{% url 'advisor_app:search_results' %}" method="get">
+        <b>Course Mnemonic: </b><input name="department" type="text"><p>(Such as "CS" or "PSYC")</p><br>
+        <b>Course Number: </b><input name="number" type="text"><p>(Such as "3240" or "1010")</p><br>
+        <b>Course Title: </b><input name="title" type="text"><p>(The full course title, such as "Dracula" or "Calculus II")</p><br>
+        <button type="submit" class="btn btn-secondary">Search</button>
+    </form>
+</div>
+{% endblock %}

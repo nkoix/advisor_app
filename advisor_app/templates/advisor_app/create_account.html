@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load socialaccount %}
+{% load bootstrap5 %}
+{% load static %}
+
+{% block content %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
+
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Welcome, {{ user.username }}. Before we finish creating your account, are you a Student or an Advisor?</p>
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% load socialaccount %}
+{% load bootstrap5 %}
+{% load static %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="\advisor_app\home\">B-17</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="\advisor_app\home\">Home <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="\advisor_app\students\">Current Advisees</a>
+      <a class="nav-item nav-link active" href="\advisor_app\adv_schedule\">Submitted Schedules</a>
+      <a class="nav-item nav-link" href="\advisor_app\chat\">Chats</a>
+    </div>
+      <div class="navbar-nav navbar-right">
+          <a class="nav-item nav-link" href="\advisor_app\home\logout\">Logout</a>
+      </div>
+  </div>
+</nav>
+{% endif %}
+
+<div class="container">
+<h1>Submitted Schedules</h1>
+<hr style="height:5px;border:none;color:#000000;background-color:#000000;">
+
+{% for x in schedules3 %}
+<h2> <b>{{ x.0.name }}</b>  </h2>
+<p> <b>Total Credits:</b> {{ x.0.credit }} &nbsp &nbsp <b>Student:</b> {{x.1.name}} ({{x.1.email}})</p>
+<!--<p> Approval Status: {{ x.0.isapproved }} &nbsp &nbsp  Schedule Sent: {{ x.0.pending_approval }}</p>-->
+
+
+
+<form action="{% url 'advisor_app:schedule_status'%}" method="post"> 
+    {% csrf_token %}
+    <input type="hidden" name="schedule_id" value="{{ x.0.id }}">
+    <button type="submit">Edit Approval</button>
+</form>
+
+
+<br>
+<!-- For Each Course -->
+{% if x.0.courses.all %}
+    <table class="table table-striped table-hover table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Course</th>
+                <th scope="col">Credits</th>
+                <th scope="col">Meetings</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in x.0.courses.all %}
+                <tr>
+                    <th scope="row">{{ course }}</th>
+                    {% if course.is_ranged %}
+                        {% with id=course.id %}
+                        {% with creds=x.0.course_creds %}
+                            {% for key, value in creds.items %}
+                                {% if key|stringformat:"s" == id|stringformat:"s" %}
+                                    <td>
+                                        {{ value }} chosen ({{ course.credit }} possible)
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                        {% endwith %}
+                    {% else %}
+                        <td>{{ course.credit }}</td>
+                    {% endif %}
+                    <td><b>{{ course.get_days }}</b> {{ course.get_start_time }}-{{ course.get_end_time }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+<hr style="height:5px;border:none;color:#000000;background-color:#000000;">
+{% endfor %}
+</div>
+{% endblock %}

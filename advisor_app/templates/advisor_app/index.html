@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load socialaccount %}
+{% load bootstrap5 %}
+{% load static %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark"></nav>
+
+<div class="container">
+        <center><h1>B-17 Schedule Advisor App</h1></center>
+        <br>
+            <form action="{% provider_login_url 'google' %}">
+                <center><button type="submit" class="btn btn-secondary btn-lg">Login</button></center>
+            </form>
+            <br>
+            <center><img src="{% static 'images/goggle.jpeg' %}" width=32 height=32 alt="google-logo">oogle Login</center>
+</div>
+
+{% endblock %}

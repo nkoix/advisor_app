@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% load socialaccount %}
+{% load bootstrap5 %}
+{% load static %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="\advisor_app\home\">B-17</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="\advisor_app\home\">Home <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="\advisor_app\students\">Current Advisees</a>
+      <a class="nav-item nav-link active" href="\advisor_app\adv_schedule\">Submitted Schedules</a>
+      <a class="nav-item nav-link" href="\advisor_app\chat\">Chats</a>
+    </div>
+      <div class="navbar-nav navbar-right">
+          <a class="nav-item nav-link" href="\advisor_app\home\logout\">Logout</a>
+      </div>
+  </div>
+</nav>
+{% endif %}
+
+
+<div class="container d-flex justify-content-center align-items-center">
+    <form action="" method="post">
+        <p>Would you like to approve this schedule?</p>
+        <h3>{{schedule}}</h3>
+        {% if schedule.courses.all %}
+            <table class="table table-striped table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Course</th>
+                        <th scope="col">Credits</th>
+                        <th scope="col">Meetings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in schedule.courses.all %}
+                        <tr>
+                            <th scope="row">{{ course }}</th>
+                            {% if course.is_ranged %}
+                                {% with id=course.id %}
+                                    {% with creds=schedule.course_creds %}
+                                        {% for key, value in creds.items %}
+                                            {% if key|stringformat:"s" == id|stringformat:"s" %}
+                                                <td>{{ value }} chosen ({{ course.credit }} possible)</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endwith %}
+                                {% endwith %}
+                            {% else %}
+                                <td>{{ course.credit }}</td>
+                            {% endif %}
+                            <td><b>{{ course.get_days }}</b> {{ course.get_start_time }}-{{ course.get_end_time }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        <hr style="height:5px;border:none;color:#000000;background-color:#000000;">
+        {% csrf_token %}
+        <!-- Include the schedule ID as a hidden input field -->
+        <input type="hidden" name="schedule_id" value="{{ schedule.id }}">
+        {{ form }}
+        <button class="btn btn-secondary" type="submit">Submit</button>
+        <a class="btn btn-secondary" href="/advisor_app/adv_schedule">Go Back</a>
+    </form>
+</div>
+{% endblock %}

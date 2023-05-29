@@ -1,0 +1,138 @@
+<!DOCTYPE
+REFERENCES
+Title:  django-chat-app
+Author: Tomi Tokko
+Date: Apr 18, 2021
+Code version: 1
+URL: https://github.com/tomitokko/django-chat-app/commits?author=tomitokko
+>
+
+{% extends 'base.html' %}
+
+{% load socialaccount %}
+{% load bootstrap5 %}
+{% load static %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="\advisor_app\home\">B-17</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="\advisor_app\home\">Home <span class="sr-only">(current)</span></a>
+        {% if not is_advisor %}
+      <a class="nav-item nav-link" href="\advisor_app\schedule\">Schedules</a>
+      <a class="nav-item nav-link" href="\advisor_app\course_search\">Course Search</a>
+        {% else %}
+      <a class="nav-item nav-link" href="\advisor_app\students\">Current Advisees</a>
+      <a class="nav-item nav-link" href="\advisor_app\adv_schedule\">Submitted Schedules</a>
+        {% endif %}
+      <a class="nav-item nav-link active" href="\advisor_app\chat\">Chats</a>
+    </div>
+      <div class="navbar-nav navbar-right">
+          <a class="nav-item nav-link" href="\advisor_app\home\logout\">Logout</a>
+      </div>
+  </div>
+</nav>
+{% endif %}
+
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+<style>
+.scrollable-container {
+  max-height: 700px;
+  overflow-y: auto;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>{{room_details.advisor_name}} & {{room_details.student_name}} Chat</h2>
+    <a href="\advisor_app\chat\">Back</a>
+    <div id="display" class="scrollable-container">
+    </div>
+
+    <div class="mt-3">
+
+        <form id="post-form">
+            {% csrf_token %}
+            <input type="hidden" name="username" id="username" value="{{username}}"/>
+            <input type="hidden" name="room_id" id="room_id" value="{{room_details.id}}"/>
+            <input type="text" name="message" id="message" width="100px" class="form-control" />
+            <input type="submit" value="Send" class="btn btn-primary mt-2">
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+  function formatDate(isoDateString) {
+    var date = new Date(isoDateString);
+    var formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return formattedDate;
+  }
+
+  var lastMessageCount = 0;
+
+  function scrollToBottom() {
+    var display = $('#display');
+    display.scrollTop(display.prop('scrollHeight'));
+  }
+
+  $(document).on('submit','#post-form',function(e){
+    e.preventDefault();
+
+    $.ajax({
+      type:'POST',
+      url:'/send',
+      data:{
+          username:$('#username').val(),
+          room_id:$('#room_id').val(),
+          message:$('#message').val(),
+        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+      },
+      success: function(data){
+        scrollToBottom();
+      }
+    });
+    document.getElementById('message').value = ''
+  });
+
+  $(document).ready(function(){
+
+    setInterval(function(){
+        $.ajax({
+            type: 'GET',
+            url : "/getMessages/{{room}}/",
+            success: function(response){
+                console.log(response);
+                if (response.messages.length !== lastMessageCount) {
+                    $("#display").empty();
+                    for (var key in response.messages)
+                    {
+                        var formattedDate = formatDate(response.messages[key].date);
+                        var temp="<div class='card mt-2'><div class='card-body'><b>"+response.messages[key].user+"</b><p>"+response.messages[key].value+"</p><span class='time-left'>"+formattedDate+"</span></div></div>";
+                        $("#display").append(temp);
+                    }
+                    if (response.messages.length > lastMessageCount) {
+                        scrollToBottom();
+                    }
+                    lastMessageCount = response.messages.length;
+                }
+            },
+            error: function(response){
+                alert('An error occured')
+            }
+        });
+    },1000);
+  });
+</script>
+
+
+</body>
+</html>
+{% endblock %}

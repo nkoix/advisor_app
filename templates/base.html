@@ -1,0 +1,33 @@
+<!--
+The following CSS and JS links were found on https://www.w3schools.com/bootstrap/bootstrap_navbar.asp,
+which were primarily used to help implement the navigation bar.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load bootstrap5 %}
+    {% load socialaccount %}
+
+    {% bootstrap_css %}
+
+    {% bootstrap_javascript %}
+
+    {% bootstrap_messages %}
+    <title>Advisor App</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        body {background-color: white;}
+    </style>
+</head>
+<body>
+    {% block content %}
+
+    {% endblock content %}
+
+</body>
+</html>
