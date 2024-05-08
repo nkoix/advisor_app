@@ -8,3 +8,11 @@ This was a project done in CS 3240 (Advanced Software Development Techniques) at
 + George B. (gkb4db@virginia.edu)
 + Mohsen A. (aaa4pa@virginia.edu)
 + Elijah B. (erb3mw@virginia.edu)
+
+# Run Site on Local Server
+
+To run this app on a local server, first download all the files in this project folder.
+
+Next, make sure you have a python interpreter on your local terminal (`pip3` is my personal favorite), and install bootstrap5 with `pip install django-bootstrap-v5`.
+
+Then, while in the *outer* `advisor_app` folder, run `python manage.py runserver`, and copy the link it gives you, and open in any browser.
