@@ -9,9 +9,9 @@ This was a project done in CS 3240 (Advanced Software Development Techniques) at
 + Mohsen A. (aaa4pa@virginia.edu)
 + Elijah B. (erb3mw@virginia.edu)
 
-# Run Site on Local Server
+# View Site on Local Server
 
-While the original project was hosted on Heroku, it is not anymore. However, it is still possible to view this site via a local host. To run this app on a local server, first download all the files in this project folder.
+While the original project was hosted on Heroku, it has since been taken down. However, it is still possible to view this site via a local host. To run this app on a local server, first download all the files in this project folder.
 
 Next, make sure you have a python interpreter on your local terminal (`pip3` is my personal favorite), and install bootstrap5 with `pip install django-bootstrap-v5`.
 
